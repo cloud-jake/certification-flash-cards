@@ -8,7 +8,6 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 PROJECT_NUMBER=`gcloud projects describe $GOOGLE_CLOUD_PROJECT --format="value(projectNumber)"`
 
-
 # Install dependencies:
 pip install -r requirements.txt
 
