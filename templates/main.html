@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <header>
+    <h1>Select Certification Exam</h1>
+  </header>
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+  {% if exams %}
+    <article>
+      <ul>
+        {% for exam in exams %}
+          <li><a href="{{ url_for('start_exam', exam_name=exam) }}" role="button">{{ exam }}</a></li>
+        {% endfor %}
+      </ul>
+    </article>
+  {% else %}
+    <p>No exams found. Make sure your Google Sheet is configured correctly and shared.</p>
+  {% endif %}
+  {% endblock %}

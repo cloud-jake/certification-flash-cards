@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title | default('GCP Study App') }}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <style>
+    body { padding: 20px; }
+    nav { margin-bottom: 20px; }
+    .container { max-width: 800px; }
+    .options button { width: 100%; margin-bottom: 10px; }
+    .feedback { margin-top: 20px; padding: 15px; border-radius: 5px; }
+    .feedback.correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .feedback.incorrect { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .explanation { margin-top: 10px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <nav>
+      <ul>
+        <li><strong>GCP Study App</strong></li>
+      </ul>
+      {% if exam_name %}
+      <ul>
+        <li><a href="{{ url_for('main_page') }}">Change Exam</a></li>
+      </ul>
+      {% endif %}
+    </nav>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <header>
+    <h2>{{ exam_name }} - Question {{ question_index + 1 }} of {{ total_questions }}</h2>
+  </header>
+
+  <article>
+    <h4>{{ current_question.question }}</h4>
+
+    {% if feedback %}
+      {# Display options again, highlighting choices #}
+      <div class="options">
+        {% for key, value in current_question.options.items() %}
+          <button class="secondary" disabled
+            {% if key == feedback.user_answer %}
+              style="border: 2px solid {% if feedback.is_correct %}green{% else %}red{% endif %};"
+            {% endif %}
+            {% if key == current_question.correct_option_key %}
+              style="border: 2px solid green; font-weight: bold;"
+            {% endif %}>
+            {{ key }}: {{ value }}
+          </button>
+        {% endfor %}
+      </div>
+
+      <div class="feedback {% if feedback.is_correct %}correct{% else %}incorrect{% endif %}">
+        <p>
+          <strong>Your Answer: {{ feedback.user_answer_text }}</strong> ({{ feedback.user_answer }})<br>
+          <strong>Correct Answer: {{ current_question.options[current_question.correct_option_key] }}</strong> ({{ current_question.correct_option_key }})
+        </p>
+        <p><strong>Result: {% if feedback.is_correct %}Correct!{% else %}Incorrect.{% endif %}</strong></p>
+        <div class="explanation">
+          <p><strong>Explanation for Correct Answer:</strong><br>{{ current_question.explanation_correct }}</p>
+          {% if not feedback.is_correct and current_question.explanation_incorrect %}
+            <p><strong>Common Pitfalls / Why other options are incorrect:</strong><br>{{ current_question.explanation_incorrect }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if question_index + 1 < total_questions %}
+        <a href="{{ url_for('show_question', exam_name=exam_name, question_index=question_index + 1) }}" role="button">Next Question</a>
+      {% else %}
+        <p>You have completed all questions for this exam!</p>
+        <a href="{{ url_for('main_page') }}" role="button">Choose Another Exam</a>
+      {% endif %}
+
+    {% else %}
+      {# Display options for answering #}
+      <form method="POST" action="{{ url_for('submit_answer', exam_name=exam_name, question_id=current_question.id) }}">
+        <div class="options">
+          {% for key, value in current_question.options.items() %}
+            <button type="submit" name="answer" value="{{ key }}">{{ key }}: {{ value }}</button>
+          {% endfor %}
+        </div>
+      </form>
+    {% endif %}
+  </article>
+  {% endblock %}
