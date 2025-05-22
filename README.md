@@ -28,6 +28,9 @@ A simple Flask web application to help study for GCP certification exams using q
 3.  **Get the Google Sheet ID:** This is the long string of characters in the URL of your Google Sheet.
     Example: `https://docs.google.com/spreadsheets/d/THIS_IS_THE_SHEET_ID/edit#gid=0`
 
+    Sheet with sample data:  https://docs.google.com/spreadsheets/d/1XvN-CZjPjxGsHZBn_rYTefC2L24OtVKxGLT7xMo_Cn0/edit?usp=sharing
+
+
 ## Local Development Setup
 
 1.  **Clone the repository.**

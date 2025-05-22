@@ -11,4 +11,5 @@ gcloud alpha run deploy gcp-study-app \
     --service-account $SA \
     --allow-unauthenticated \
     --set-env-vars GOOGLE_SHEET_ID="${GOOGLE_SHEET_ID}" \
-    --set-env-vars FLASK_SECRET_KEY="generate_a_strong_random_secret_for_production"    
+    --set-env-vars FLASK_SECRET_KEY="generate_a_strong_random_secret_for_production" \
+    --set-env-vars SUPPORT_NAME="Jake Holmquist",SUPPORT_EMAIL="jake.holmquist@gmail.com" 

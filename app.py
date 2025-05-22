@@ -8,7 +8,6 @@ import threading # For cache lock
 import random # For shuffling questions
 
 app = Flask(__name__)
-# IMPORTANT: Set a strong, random secret key in your environment for production!
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev_default_strong_random_secret_key_123!")
 
 # --- Configuration ---
@@ -16,12 +15,32 @@ GOOGLE_SHEET_ID = os.environ.get("GOOGLE_SHEET_ID")
 if not GOOGLE_SHEET_ID:
     app.logger.warning("GOOGLE_SHEET_ID environment variable is not set!")
 
-# --- Caching Setup ---
+# --- Support Contact Configuration ---
+# Read from environment variables, with sensible defaults if not set
+app.config['SUPPORT_NAME'] = os.environ.get("SUPPORT_NAME", "Support Team")
+app.config['SUPPORT_EMAIL'] = os.environ.get("SUPPORT_EMAIL", "support@example.com")
+app.config['SHOW_SUPPORT_INFO'] = bool(os.environ.get("SUPPORT_NAME") and os.environ.get("SUPPORT_EMAIL"))
+
+
+# --- Caching Setup (remains the same) ---
 EXAM_DATA_CACHE = {}
 CACHE_DURATION_SECONDS = int(os.environ.get("CACHE_DURATION_SECONDS", 10 * 60))
 CACHE_LOCK = threading.Lock()
 
-# --- Google Sheets Setup ---
+# --- Context Processor to Inject Support Info into all Templates ---
+@app.context_processor
+def inject_support_info():
+    return dict(
+        support_name=app.config['SUPPORT_NAME'],
+        support_email=app.config['SUPPORT_EMAIL'],
+        show_support_info=app.config['SHOW_SUPPORT_INFO'] # To control visibility in template
+    )
+
+# --- Google Sheets Setup (get_gspread_client, get_exam_sheets, etc. - REMAINS THE SAME) ---
+# For brevity, these functions are not repeated here but should be the same as your last working version.
+# Ensure get_exam_sheets includes the underscore filtering.
+# Ensure question fetching/caching includes randomization.
+# <PASTE THE GOOGLE SHEETS AND CACHING FUNCTIONS FROM YOUR LAST WORKING app.py HERE>
 def get_gspread_client():
     """Authenticates with Google Sheets API."""
     try:
@@ -108,7 +127,7 @@ def _fetch_and_parse_questions(worksheet, exam_name):
             continue
         
         questions.append({
-            "id": idx, # This 'id' is the original 0-based index from the sheet
+            "id": idx, 
             "question": question_text,
             "options": {key[0].upper(): row_dict.get(expected_headers[f"ans_{key[0].lower()}_col"], '') for key in ["A", "B", "C", "D"]},
             "correct_option_key": correct_answer_key,
@@ -148,11 +167,11 @@ def get_cached_questions_for_exam(client, exam_name):
 
     if cached_entry and (current_time - cached_entry['timestamp'] < CACHE_DURATION_SECONDS):
         if cached_entry['error'] and "Quota exceeded" not in cached_entry['error'] and \
-           current_time - cached_entry['timestamp'] > 60: # Re-fetch non-quota errors after 1 min
+           current_time - cached_entry['timestamp'] > 60: 
             app.logger.info(f"Stale non-quota error in cache for '{exam_name}'. Re-fetching.")
         else:
             app.logger.info(f"Serving '{exam_name}' from cache. Cached at {time.ctime(cached_entry['timestamp'])}.")
-            return cached_entry['data'], cached_entry['error']
+            return cached_entry['data'], cached_entry['error'] 
     
     app.logger.info(f"Cache miss/expired/stale-error for '{exam_name}'. Fetching fresh data.")
     questions, error_msg = get_questions_for_exam_from_sheet(client, exam_name)
@@ -163,7 +182,10 @@ def get_cached_questions_for_exam(client, exam_name):
         app.logger.info(f"Updated cache for '{exam_name}'. Error: {error_msg is not None}")
     return questions, error_msg
 
-# --- Flask Routes ---
+
+# --- Flask Routes (REMAINS THE SAME, including randomization logic) ---
+# For brevity, these are not repeated here but should be the same as your last working version.
+# <PASTE THE FLASK ROUTES FROM YOUR LAST WORKING app.py HERE>
 @app.route('/')
 def main_page():
     client = get_gspread_client()
@@ -177,8 +199,8 @@ def main_page():
         return render_template('main.html', error=error_msg, exams=exams or []) 
     
     session.pop('exam_name', None)
-    session.pop('shuffled_question_indices', None) # For randomized version
-    session.pop('current_shuffled_idx_position', None) # For randomized version
+    session.pop('shuffled_question_indices', None) 
+    session.pop('current_shuffled_idx_position', None) 
     for key in [k for k in session if k.startswith('feedback_q')]: session.pop(key, None)
             
     return render_template('main.html', exams=exams, title="Select Exam", message=request.args.get('message'))
@@ -198,10 +220,9 @@ def start_exam(exam_name):
         app.logger.warning(f"Start exam '{exam_name}': No questions found.")
         return redirect(url_for('main_page', error=f"No questions found for exam '{exam_name}'."))
 
-    # --- Randomization Logic ---
     original_indices = list(range(len(questions_original_order)))
     random.shuffle(original_indices)
-    app.logger.info(f"Starting exam '{exam_name}'. Original question count: {len(questions_original_order)}. Shuffled indices order: {original_indices[:5]}...") # Log first 5 shuffled
+    app.logger.info(f"Starting exam '{exam_name}'. Original question count: {len(questions_original_order)}. Shuffled indices order: {original_indices[:5]}...") 
 
     session['exam_name'] = exam_name
     session['shuffled_question_indices'] = original_indices 
@@ -247,7 +268,7 @@ def show_question_page():
     return render_template('flashcard.html',
                            title=f"{exam_name} - Q{current_shuffled_idx_position + 1}",
                            exam_name=exam_name,
-                           question_index=current_shuffled_idx_position, # For display and form
+                           question_index=current_shuffled_idx_position, 
                            total_questions=len(shuffled_indices),
                            current_question=current_question,
                            feedback=feedback_info)
@@ -286,7 +307,7 @@ def submit_answer_page():
 
     if not user_answer_key:
         app.logger.warning(f"Submit answer '{exam_name}', Q_id {current_question['id']}: No answer submitted.")
-        return redirect(url_for('show_question_page')) # Stay on current question
+        return redirect(url_for('show_question_page'))
 
     user_answer_text = current_question['options'].get(user_answer_key, "N/A")
     is_correct = (user_answer_key == current_question['correct_option_key'])
@@ -306,9 +327,8 @@ def next_question_page():
         app.logger.warning("Next question: Exam session not fully initialized.")
         return redirect(url_for('main_page', error="Exam session not initialized."))
 
-    # Clear feedback for the current question before moving
     client = get_gspread_client()
-    if client: # Only attempt if client is available
+    if client: 
         all_questions_for_exam, _ = get_cached_questions_for_exam(client, exam_name)
         if all_questions_for_exam and 0 <= current_shuffled_idx_position < len(shuffled_indices):
             actual_old_idx = shuffled_indices[current_shuffled_idx_position]
@@ -318,7 +338,6 @@ def next_question_page():
     else:
         app.logger.warning("Next question: No gspread client, cannot fetch questions to clear feedback precisely by ID.")
 
-
     if current_shuffled_idx_position + 1 < len(shuffled_indices):
         session['current_shuffled_idx_position'] = current_shuffled_idx_position + 1
         app.logger.info(f"Next Q for '{exam_name}', new shuffled_pos: {session['current_shuffled_idx_position']}")
@@ -327,12 +346,15 @@ def next_question_page():
         session.pop('exam_name', None)
         session.pop('shuffled_question_indices', None)
         session.pop('current_shuffled_idx_position', None)
-        # Keep feedback for the last question, or clear all feedback_q*
         return redirect(url_for('main_page', message=f"You've completed all questions for {exam_name}! Choose another exam."))
 
     return redirect(url_for('show_question_page'))
 
+
+# --- Main Execution ---
 if __name__ == '__main__':
     is_debug_mode = os.environ.get("FLASK_DEBUG", "False").lower() == "true"
     app.logger.info(f"Application starting in {'DEBUG' if is_debug_mode else 'PRODUCTION'} mode.")
-    app.run(debug=is_debug_mode, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+    app.run(debug=is_debug_mode, 
+            host='0.0.0.0', 
+            port=int(os.environ.get('PORT', 8080)))

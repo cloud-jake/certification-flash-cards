@@ -10,53 +10,42 @@
         padding: 20px; 
         display: flex;
         flex-direction: column;
-        min-height: 100vh; /* Ensure footer is at bottom even on short pages */
+        min-height: 100vh; 
     }
     nav { margin-bottom: 20px; }
     .container { 
         max-width: 800px; 
         width: 100%;
-        margin: 0 auto; /* Center container */
-        flex-grow: 1; /* Allow main content to grow */
+        margin: 0 auto; 
+        flex-grow: 1; 
     }
     .options button { width: 100%; margin-bottom: 10px; }
     .feedback { margin-top: 20px; padding: 15px; border-radius: 5px; }
     
     .feedback.correct { 
-      background-color: #E7F5E8; /* Very light green */
-      color: #0A3D15; /* Dark green text */
-      border: 1px solid #5CB85C; /* Medium green border */
+      background-color: #E7F5E8; color: #0A3D15; border: 1px solid #5CB85C; 
     }
-    .feedback.correct p,
-    .feedback.correct strong,
-    .feedback.correct div,
-    .feedback.correct div p,
-    .feedback.correct div strong {
+    .feedback.correct p, .feedback.correct strong, .feedback.correct div,
+    .feedback.correct div p, .feedback.correct div strong {
       color: #0A3D15 !important;
     }
 
     .feedback.incorrect { 
-      background-color: #FBE9E7; /* Very light red */
-      color: #6D0F0F; /* Dark red text */
-      border: 1px solid #D9534F; /* Medium red border */
+      background-color: #FBE9E7; color: #6D0F0F; border: 1px solid #D9534F; 
     }
-    .feedback.incorrect p,
-    .feedback.incorrect strong,
-    .feedback.incorrect div,
-    .feedback.incorrect div p,
-    .feedback.incorrect div strong {
+    .feedback.incorrect p, .feedback.incorrect strong, .feedback.incorrect div,
+    .feedback.incorrect div p, .feedback.incorrect div strong {
       color: #6D0F0F !important;
     }
 
     .explanation { margin-top: 10px; }
     .hidden { display: none; }
 
-    /* Style for the new footer */
     .app-footer {
         text-align: center;
         padding: 20px 0;
-        margin-top: 40px; /* Space above the footer */
-        border-top: 1px solid var(--pico-muted-border-color); /* Pico style border */
+        margin-top: 40px; 
+        border-top: 1px solid var(--pico-muted-border-color); 
     }
   </style>
 </head>
@@ -78,7 +67,12 @@
   </main>
 
   <footer class="app-footer container">
-    <p><small>For support, contact Jake Holmquist <a href="mailto:jake.holmquist@valtech.com">jake.holmquist@valtech.com</a></small></p>
+    {% if show_support_info %} {# Use the boolean flag from context processor #}
+      <p><small>For support, contact {{ support_name }} <a href="mailto:{{ support_email }}">{{ support_email }}</a></small></p>
+    {% else %}
+      {# Optionally show a message or nothing #}
+    {% endif %}
   </footer>
-  </body>
+
+</body>
 </html>
