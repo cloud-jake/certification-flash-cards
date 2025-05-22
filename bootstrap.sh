@@ -6,6 +6,9 @@
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
+PROJECT_NUMBER=`gcloud projects describe $GOOGLE_CLOUD_PROJECT --format="value(projectNumber)"`
+
+
 # Install dependencies:
 pip install -r requirements.txt
 
@@ -14,7 +17,19 @@ pip install -r requirements.txt
 ## Create a Google Cloud Project.
 
 ##Enable the Google Sheets API.
-gcloud services enable sheets.googleapis.com
+gcloud services enable sheets.googleapis.com cloudbuild.googleapis.com
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/storage.objectViewer"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/logging.logWriter"
+
+ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/artifactregistry.writer"
 
 ##Create a Service Account.
 gcloud iam service-accounts create flashcard-sa \

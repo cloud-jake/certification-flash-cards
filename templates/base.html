@@ -6,44 +6,58 @@
   <title>{{ title | default('GCP Study App') }}</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
   <style>
-    body { padding: 20px; }
+    body { 
+        padding: 20px; 
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Ensure footer is at bottom even on short pages */
+    }
     nav { margin-bottom: 20px; }
-    .container { max-width: 800px; }
+    .container { 
+        max-width: 800px; 
+        width: 100%;
+        margin: 0 auto; /* Center container */
+        flex-grow: 1; /* Allow main content to grow */
+    }
     .options button { width: 100%; margin-bottom: 10px; }
     .feedback { margin-top: 20px; padding: 15px; border-radius: 5px; }
-
-    /* --- Updated Styles for Higher Contrast & Dark Mode Compatibility --- */
-    .feedback.correct {
+    
+    .feedback.correct { 
       background-color: #E7F5E8; /* Very light green */
+      color: #0A3D15; /* Dark green text */
       border: 1px solid #5CB85C; /* Medium green border */
-      color: #0A3D15; /* Default dark green for text directly in this div */
     }
-    /* Ensure text elements INSIDE .feedback.correct use our specified dark green */
     .feedback.correct p,
     .feedback.correct strong,
-    .feedback.correct div, /* Catches the .explanation div */
-    .feedback.correct div p, /* Paragraphs within .explanation */
-    .feedback.correct div strong { /* Strong tags within .explanation */
+    .feedback.correct div,
+    .feedback.correct div p,
+    .feedback.correct div strong {
       color: #0A3D15 !important;
     }
 
-    .feedback.incorrect {
+    .feedback.incorrect { 
       background-color: #FBE9E7; /* Very light red */
+      color: #6D0F0F; /* Dark red text */
       border: 1px solid #D9534F; /* Medium red border */
-      color: #6D0F0F; /* Default dark red for text directly in this div */
     }
-    /* Ensure text elements INSIDE .feedback.incorrect use our specified dark red */
     .feedback.incorrect p,
     .feedback.incorrect strong,
-    .feedback.incorrect div, /* Catches the .explanation div */
-    .feedback.incorrect div p, /* Paragraphs within .explanation */
-    .feedback.incorrect div strong { /* Strong tags within .explanation */
+    .feedback.incorrect div,
+    .feedback.incorrect div p,
+    .feedback.incorrect div strong {
       color: #6D0F0F !important;
     }
-    /* --- End of Updated Styles --- */
 
     .explanation { margin-top: 10px; }
     .hidden { display: none; }
+
+    /* Style for the new footer */
+    .app-footer {
+        text-align: center;
+        padding: 20px 0;
+        margin-top: 40px; /* Space above the footer */
+        border-top: 1px solid var(--pico-muted-border-color); /* Pico style border */
+    }
   </style>
 </head>
 <body>
@@ -58,7 +72,13 @@
       </ul>
       {% endif %}
     </nav>
+
     {% block content %}{% endblock %}
+
   </main>
-</body>
+
+  <footer class="app-footer container">
+    <p><small>For support, contact Jake Holmquist <a href="mailto:jake.holmquist@valtech.com">jake.holmquist@valtech.com</a></small></p>
+  </footer>
+  </body>
 </html>

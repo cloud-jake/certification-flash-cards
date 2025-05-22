@@ -88,7 +88,8 @@ A simple Flask web application to help study for GCP certification exams using q
         --allow-unauthenticated \
         --service-account YOUR_CLOUD_RUN_SERVICE_ACCOUNT_EMAIL \
         --set-env-vars GOOGLE_SHEET_ID="your_google_sheet_id" \
-        --set-env-vars FLASK_SECRET_KEY="generate_a_strong_random_secret_for_production"
+        --set-env-vars FLASK_SECRET_KEY="generate_a_strong_random_secret_for_production" \
+        --set-env-vars GOOGLE_ENTRYPOINT="gunicorn -b :$PORT app:app"
     ```
     Replace `YOUR_REGION` with your preferred region (e.g., `us-central1`), `YOUR_CLOUD_RUN_SERVICE_ACCOUNT_EMAIL` with the email of the service account you created for Cloud Run, and `your_google_sheet_id` with the actual ID.
     **Important:** `FLASK_SECRET_KEY` should be a strong, random string for production.
