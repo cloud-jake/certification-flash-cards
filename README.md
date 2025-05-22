@@ -2,7 +2,7 @@
 
 A simple Flask web application to help study for GCP certification exams using questions from a Google Sheet.
 
-<img src="img/main.png" alt="Screenshot 1 Alt Text" width="200"> <img src="img/question.png" alt="Screenshot 2 Alt Text" width="200"> <img src="img/answer.png" alt="Screenshot 3 Alt Text" width="200">
+<img src="img/main.png" alt="Main screen with exam options to select" width="200"> <img src="img/question.png" alt="Sample Question showing 4 multiple choice options" width="200"> <img src="img/answer.png" alt="Sample Answer showing the right answer, explanation of the right answer, and why the otehr answers were not the best choice" width="200">
 
 ## Features
 
