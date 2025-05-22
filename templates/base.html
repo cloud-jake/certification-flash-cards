@@ -11,17 +11,34 @@
     .container { max-width: 800px; }
     .options button { width: 100%; margin-bottom: 10px; }
     .feedback { margin-top: 20px; padding: 15px; border-radius: 5px; }
-    
-    /* --- Updated Styles for Higher Contrast --- */
-    .feedback.correct { 
+
+    /* --- Updated Styles for Higher Contrast & Dark Mode Compatibility --- */
+    .feedback.correct {
       background-color: #E7F5E8; /* Very light green */
-      color: #0A3D15; /* Dark green text */
       border: 1px solid #5CB85C; /* Medium green border */
+      color: #0A3D15; /* Default dark green for text directly in this div */
     }
-    .feedback.incorrect { 
+    /* Ensure text elements INSIDE .feedback.correct use our specified dark green */
+    .feedback.correct p,
+    .feedback.correct strong,
+    .feedback.correct div, /* Catches the .explanation div */
+    .feedback.correct div p, /* Paragraphs within .explanation */
+    .feedback.correct div strong { /* Strong tags within .explanation */
+      color: #0A3D15 !important;
+    }
+
+    .feedback.incorrect {
       background-color: #FBE9E7; /* Very light red */
-      color: #6D0F0F; /* Dark red text */
       border: 1px solid #D9534F; /* Medium red border */
+      color: #6D0F0F; /* Default dark red for text directly in this div */
+    }
+    /* Ensure text elements INSIDE .feedback.incorrect use our specified dark red */
+    .feedback.incorrect p,
+    .feedback.incorrect strong,
+    .feedback.incorrect div, /* Catches the .explanation div */
+    .feedback.incorrect div p, /* Paragraphs within .explanation */
+    .feedback.incorrect div strong { /* Strong tags within .explanation */
+      color: #6D0F0F !important;
     }
     /* --- End of Updated Styles --- */
 

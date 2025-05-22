@@ -14,10 +14,10 @@
         {% for key, value in current_question.options.items() %}
           <button class="secondary" disabled
             {% if key == feedback.user_answer %}
-              style="border-width: 2px; border-color: {% if feedback.is_correct %}#5CB85C{% else %}#D9534F{% endif %};" {# Using new border colors for consistency #}
+              style="border-width: 2px; border-color: {% if feedback.is_correct %}#5CB85C{% else %}#D9534F{% endif %};"
             {% endif %}
             {% if key == current_question.correct_option_key %}
-              style="border-width: 2px; border-color: #5CB85C; font-weight: bold;" {# Using new correct border color #}
+              style="border-width: 2px; border-color: #5CB85C; font-weight: bold;"
             {% endif %}>
             {{ key }}: {{ value }}
           </button>
@@ -33,22 +33,22 @@
         
         <div class="explanation">
           <p><strong>Explanation for Correct Answer ({{ current_question.correct_option_key }}):</strong><br>{{ current_question.explanation_correct }}</p>
-          {% if current_question.explanation_incorrect and current_question.explanation_incorrect.strip() %} {# Check if explanation_incorrect exists and is not just whitespace #}
+          {% if current_question.explanation_incorrect and current_question.explanation_incorrect.strip() %}
             <p><strong>Further Considerations / Why other options might be chosen or are incorrect:</strong><br>{{ current_question.explanation_incorrect }}</p>
           {% endif %}
         </div>
-        </div>
+      </div>
 
       {% if question_index + 1 < total_questions %}
-        <a href="{{ url_for('show_question', exam_name=exam_name, question_index=question_index + 1) }}" role="button">Next Question</a>
+        <a href="{{ url_for('next_question_page') }}" role="button">Next Question</a>
       {% else %}
         <p>You have completed all questions for this exam!</p>
         <a href="{{ url_for('main_page') }}" role="button">Choose Another Exam</a>
       {% endif %}
 
     {% else %}
-      {# Display options for answering (this part remains the same) #}
-      <form method="POST" action="{{ url_for('submit_answer', exam_name=exam_name, question_id=current_question.id) }}">
+      {# Display options for answering #}
+      <form method="POST" action="{{ url_for('submit_answer_page') }}">
         <div class="options">
           {% for key, value in current_question.options.items() %}
             <button type="submit" name="answer" value="{{ key }}">{{ key }}: {{ value }}</button>
