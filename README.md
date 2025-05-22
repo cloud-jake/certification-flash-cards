@@ -2,6 +2,9 @@
 
 A simple Flask web application to help study for GCP certification exams using questions from a Google Sheet.
 
+![Screenshot 1 Alt Text](img/main.png) ![Screenshot 2 Alt Text](img/question.png) ![Screenshot 3 Alt Text](img/answer.png)
+
+
 ## Features
 
 - Lists exams based on tabs in a Google Sheet.
